@@ -36,15 +36,21 @@ public class CarouselService {
      */
     public CarouselResponse create(CarouselRequest req) {
         Carousel c = new Carousel();
-        // 从请求填充实体
         c.setTitle(req.getTitle());
-        c.setImageUrl(req.getImageUrl());
-        c.setLinkUrl(req.getLinkUrl());
-        c.setSortOrder(req.getSortOrder());
+        // DTO pic -> entity.imageUrl
+        c.setImageUrl(req.getPic());
+        if (req.getTarget() != null) {
+            c.setTargetType(req.getTarget().getType());
+            c.setTargetId(req.getTarget().getId());
+        } else {
+            c.setTargetType(null);
+            c.setTargetId(null);
+        }
+        c.setSortOrder(req.getSort());
         c.setActive(req.getActive());
-        // 保存到数据库
+        c.setStartAt(req.getStartAt());
+        c.setEndAt(req.getEndAt());
         Carousel saved = repository.save(c);
-        // 转换为响应 DTO
         return toResponse(saved);
     }
 
@@ -86,13 +92,19 @@ public class CarouselService {
      */
     public CarouselResponse update(Long id, CarouselRequest req) {
         Carousel c = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Carousel not found: " + id));
-        // 更新字段
         c.setTitle(req.getTitle());
-        c.setImageUrl(req.getImageUrl());
-        c.setLinkUrl(req.getLinkUrl());
-        c.setSortOrder(req.getSortOrder());
+        c.setImageUrl(req.getPic());
+        if (req.getTarget() != null) {
+            c.setTargetType(req.getTarget().getType());
+            c.setTargetId(req.getTarget().getId());
+        } else {
+            c.setTargetType(null);
+            c.setTargetId(null);
+        }
+        c.setSortOrder(req.getSort());
         c.setActive(req.getActive());
-        // 保存并返回
+        c.setStartAt(req.getStartAt());
+        c.setEndAt(req.getEndAt());
         Carousel updated = repository.save(c);
         return toResponse(updated);
     }
@@ -121,11 +133,17 @@ public class CarouselService {
         CarouselResponse r = new CarouselResponse();
         r.setId(c.getId());
         r.setTitle(c.getTitle());
-        r.setImageUrl(c.getImageUrl());
-        r.setLinkUrl(c.getLinkUrl());
-        r.setSortOrder(c.getSortOrder());
+        r.setPic(c.getImageUrl()); // entity->dto pic
+        if (c.getTargetType() != null || c.getTargetId() != null) {
+            CarouselResponse.Target t = new CarouselResponse.Target();
+            t.setType(c.getTargetType());
+            t.setId(c.getTargetId());
+            r.setTarget(t);
+        }
+        r.setSort(c.getSortOrder());
         r.setActive(c.getActive());
-        // 传递时间戳字段（创建/更新）
+        r.setStartAt(c.getStartAt());
+        r.setEndAt(c.getEndAt());
         r.setCreatedAt(c.getCreatedAt());
         r.setUpdatedAt(c.getUpdatedAt());
         return r;

@@ -1,42 +1,60 @@
 package com.example.demo.dto;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public class CarouselResponse {
 
     private Long id;
     private String title;
-    private String imageUrl;
-    private String linkUrl;
-    private Integer sortOrder;
+    private String pic; // 返回字段名 pic
+    private Target target;
+    private Integer sort;
     private Boolean active;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Instant startAt;
+    private Instant endAt;
+    private Instant createdAt;
+    private Instant updatedAt;
 
     public CarouselResponse() {}
 
-    // Getters & setters
+    public static class Target {
+        private String type;
+        private String id;
+        public Target() {}
+        public String getType() { return type; }
+        public void setType(String type) { this.type = type; }
+        public String getId() { return id; }
+        public void setId(String id) { this.id = id; }
+    }
+
+    // getters / setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
 
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public String getPic() { return pic; }
+    public void setPic(String pic) { this.pic = pic; }
 
-    public String getLinkUrl() { return linkUrl; }
-    public void setLinkUrl(String linkUrl) { this.linkUrl = linkUrl; }
+    public Target getTarget() { return target; }
+    public void setTarget(Target target) { this.target = target; }
 
-    public Integer getSortOrder() { return sortOrder; }
-    public void setSortOrder(Integer sortOrder) { this.sortOrder = sortOrder; }
+    public Integer getSort() { return sort; }
+    public void setSort(Integer sort) { this.sort = sort; }
 
     public Boolean getActive() { return active; }
     public void setActive(Boolean active) { this.active = active; }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public Instant getStartAt() { return startAt; }
+    public void setStartAt(Instant startAt) { this.startAt = startAt; }
 
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public Instant getEndAt() { return endAt; }
+    public void setEndAt(Instant endAt) { this.endAt = endAt; }
+
+    public Instant getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
+
+    public Instant getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
 }

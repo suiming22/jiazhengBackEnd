@@ -21,3 +21,8 @@ mvn clean package -DskipTests
 
 # 运行项目
 mvn spring-boot:run
+# （实时打印日志）
+mvn spring-boot:run -Dspring-boot.run.profiles=docker
+
+# 手动执行 SQL 脚本（例如创建轮播图表）
+docker exec -i mysql_dev mysql -u myuser -pmypass mydb
