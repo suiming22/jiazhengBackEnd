@@ -1,16 +1,30 @@
 # 创建轮播图
 POST /api/carousels 
+# 请求体 (JSON):
+title (string) — 必填，最大长度 255
+imageUrl (string) — 必填，最大长度 1024（可以是相对路径 "/uploads/xxx.jpg" 或完整 URL）
+linkUrl (string) — 可选，最大长度 1024
+sortOrder (integer) — 可选，默认 0
+active (boolean) — 可选，默认 true
+
 # 查询轮播图（支持分页：?page=0&size=20&sort=sortOrder,asc）
-GET /api/carousels 
+GET /api/carousels
+# Query 参数:
+page (int) — 默认 0
+size (int) — 默认 20
+sort (string) — 默认 "sortOrder,asc"；格式 "property,direction"（direction 为 asc 或 desc）
+
 # 查询单条（可选）
 GET /api/carousels/{id}
+# Path 参数:
+id (long) — 资源 id
+
 # 修改轮播图
 PUT /api/carousels/{id}
-# 删除轮播图
-DELETE /api/carousels/{id} 
+# Path 参数:
+id (long)
 
-创建： curl -X POST http://localhost:8080/api/carousels -H "Content-Type: application/json" -d '{"title":"Demo","imageUrl":"/uploads/demo.jpg","linkUrl":"https://example.com","sortOrder":1,"active":true}'
-列表（分页）： curl "http://localhost:8080/api/carousels?page=0&size=20&sort=sortOrder,asc"
-查询单条： curl http://localhost:8080/api/carousels/1
-修改： curl -X PUT http://localhost:8080/api/carousels/1 -H "Content-Type: application/json" -d '{"title":"New","imageUrl":"/uploads/new.jpg","linkUrl":"","sortOrder":2,"active":true}'
-删除： curl -X DELETE http://localhost:8080/api/carousels/1
+# 删除轮播图
+DELETE /api/carousels/{id}
+# Path 参数:
+id (long)
