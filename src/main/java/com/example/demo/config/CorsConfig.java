@@ -13,12 +13,14 @@ public class CorsConfig {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        // 指定允许的前端 origin
-        config.setAllowedOrigins(List.of("http://localhost:9527"));
-        // 若想允许任意 origin（开发）可用: List.of("*")
-        config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
+        // 添加实际的前端地址
+        config.setAllowedOrigins(List.of(
+                "http://localhost:9527",
+                "http://172.17.0.1:9527"
+        ));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true); // 如果要发送 cookie 或认证头
+        config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
