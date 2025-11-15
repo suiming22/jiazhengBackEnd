@@ -19,6 +19,10 @@ docker exec -it mysql_dev mysql -u myuser -pmypass -e "USE mydb; SELECT installe
 # 用 Maven 编译并确认编译产物
 mvn clean package -DskipTests
 
+#  mvn clean package 重新构建
+mvn clean package
+# 强制刷新依赖并重建
+mvn -U clean package
 # 运行项目
 mvn spring-boot:run
 # （实时打印日志）

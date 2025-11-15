@@ -9,6 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * 轮播图业务服务层
  * 负责处理轮播图的增删改查与分页逻辑，调用 Repository 完成持久化操作，
@@ -16,6 +21,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class CarouselService {
+
+    private static final Logger log = LoggerFactory.getLogger(CarouselService.class);
 
     private final CarouselRepository repository;
 
@@ -147,5 +154,14 @@ public class CarouselService {
         r.setCreatedAt(c.getCreatedAt());
         r.setUpdatedAt(c.getUpdatedAt());
         return r;
+    }
+
+    /**
+     * 临时调试方法：绕过分页，检查 repository 是否能取到数据
+     */
+    public List<CarouselResponse> listAllForDebug() {
+        List<Carousel> all = repository.findAll();
+        log.info("DEBUG: repository.findAll() returned {} rows", all.size());
+        return all.stream().map(this::toResponse).collect(Collectors.toList());
     }
 }

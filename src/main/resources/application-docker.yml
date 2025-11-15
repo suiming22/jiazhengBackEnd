@@ -18,7 +18,8 @@ spring:
   flyway:
     enabled: false
     locations: classpath:db/migration
-
+    baseline-on-migrate: true
+    baseline-version: 0
 app:
   upload-dir: uploads
 
