@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.CarouselRequest;
 import com.example.demo.dto.CarouselResponse;
+import com.example.demo.dto.PageData;  // 添加这一行
 import com.example.demo.entity.Carousel;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.CarouselRepository;
@@ -70,11 +71,20 @@ public class CarouselService {
      * @param sort 排序方式
      * @return 分页的响应 DTO
      */
-    public Page<CarouselResponse> list(int page, int size, Sort sort) {
+    public PageData<CarouselResponse> list(int page, int size, Sort sort) {
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<Carousel> p = repository.findAll(pageable);
-        // 将 Page<Carousel> 映射为 Page<CarouselResponse>
-        return p.map(this::toResponse);
+        List<CarouselResponse> content = p.getContent().stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+
+        return PageData.of(
+                content,
+                p.getNumber(),
+                p.getSize(),
+                p.getTotalElements(),
+                p.getTotalPages()
+        );
     }
 
     /**

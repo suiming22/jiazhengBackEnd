@@ -1,61 +1,51 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.CarouselRequest;
-import com.example.demo.dto.CarouselResponse;
+import com.example.demo.dto.*;
 import com.example.demo.service.CarouselService;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.net.URI;
 
 @RestController
 @RequestMapping("/api/carousels")
 public class CarouselController {
 
-    private final CarouselService service;
+    private final CarouselService carouselService;
 
-    @Autowired
-    public CarouselController(CarouselService service) {
-        this.service = service;
-    }
-
-    @PostMapping
-    public ResponseEntity<CarouselResponse> create(@Valid @RequestBody CarouselRequest req, UriComponentsBuilder uriBuilder) {
-        CarouselResponse created = service.create(req);
-        URI location = uriBuilder.path("/api/carousels/{id}").buildAndExpand(created.getId()).toUri();
-        return ResponseEntity.created(location).body(created);
+    public CarouselController(CarouselService carouselService) {
+        this.carouselService = carouselService;
     }
 
     @GetMapping
-    public ResponseEntity<?> list(
+    public ApiResponse<PageData<CarouselResponse>> list(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "sortOrder,asc") String sort) {
 
-        String[] sortParts = sort.split(",");
-        Sort.Direction dir = Sort.Direction.fromString(sortParts.length > 1 ? sortParts[1] : "asc");
-        String prop = sortParts.length > 0 ? sortParts[0] : "sortOrder";
-        var result = service.list(page, size, Sort.by(dir, prop));
-        return ResponseEntity.ok(result);
+        String[] sortParams = sort.split(",");
+        Sort sorting = Sort.by(Sort.Direction.fromString(sortParams[1]), sortParams[0]);
+
+        PageData<CarouselResponse> pageData = carouselService.list(page, size, sorting);
+        return ApiResponse.success(pageData);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CarouselResponse> get(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getById(id));
+    public ApiResponse<CarouselResponse> getById(@PathVariable Long id) {
+        return ApiResponse.success(carouselService.getById(id));
+    }
+
+    @PostMapping
+    public ApiResponse<CarouselResponse> create(@RequestBody CarouselRequest request) {
+        return ApiResponse.success(carouselService.create(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CarouselResponse> update(@PathVariable Long id, @Valid @RequestBody CarouselRequest req) {
-        return ResponseEntity.ok(service.update(id, req));
+    public ApiResponse<CarouselResponse> update(@PathVariable Long id, @RequestBody CarouselRequest request) {
+        return ApiResponse.success(carouselService.update(id, request));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
-        return ResponseEntity.noContent().build();
+    public ApiResponse<Void> delete(@PathVariable Long id) {
+        carouselService.delete(id);
+        return ApiResponse.success(null);
     }
 }
