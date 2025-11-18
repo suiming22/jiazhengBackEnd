@@ -107,24 +107,46 @@ public class CarouselService {
      * @param req 更新请求 DTO
      * @return 更新后的响应 DTO
      */
-    public CarouselResponse update(Long id, CarouselRequest req) {
-        Carousel c = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Carousel not found: " + id));
-        c.setTitle(req.getTitle());
-        c.setImageUrl(req.getPic());
-        if (req.getTarget() != null) {
-            c.setTargetType(req.getTarget().getType());
-            c.setTargetId(req.getTarget().getId());
-        } else {
-            c.setTargetType(null);
-            c.setTargetId(null);
-        }
-        c.setSortOrder(req.getSort());
-        c.setActive(req.getActive());
-        c.setStartAt(req.getStartAt());
-        c.setEndAt(req.getEndAt());
-        Carousel updated = repository.save(c);
-        return toResponse(updated);
-    }
+   public CarouselResponse update(Long id, CarouselRequest req) {
+       Carousel c = repository.findById(id)
+           .orElseThrow(() -> new ResourceNotFoundException("Carousel not found: " + id));
+
+       if (req.getTitle() != null) {
+           c.setTitle(req.getTitle());
+       }
+       if (req.getPic() != null) {
+           c.setImageUrl(req.getPic());
+       }
+       // 改进: 检查 target 对象及其字段
+       if (req.getTarget() != null) {
+           if (req.getTarget().getType() != null) {
+               c.setTargetType(req.getTarget().getType());
+           }
+           if (req.getTarget().getId() != null) {
+               c.setTargetId(req.getTarget().getId());
+           }
+       }
+       if (req.getSort() != null) {
+           c.setSortOrder(req.getSort());
+       }
+       if (req.getActive() != null) {
+           c.setActive(req.getActive());
+       }
+       if (req.getStartAt() != null) {
+           c.setStartAt(req.getStartAt());
+       }
+       if (req.getEndAt() != null) {
+           c.setEndAt(req.getEndAt());
+       }
+
+       try {
+           Carousel updated = repository.save(c);
+           return toResponse(updated);
+       } catch (Exception e) {
+           log.error("Failed to update carousel {}: {}", id, e.getMessage(), e);
+           throw e;
+       }
+   }
 
     /**
      * 删除指定 ID 的轮播图。
